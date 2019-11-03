@@ -10,7 +10,7 @@ module.exports = (http) => {
 
             socket_conenction.query.push({
                 action: "connection",
-                enum: 'disconnected',
+                value: 'disconnected',
                 user_id: socket_conenction.user_id
             })
         })
@@ -25,7 +25,7 @@ module.exports = (http) => {
 
             socket_conenction.query.push({
                 action: "connection",
-                enum: 'connected',
+                value: 'connected',
                 user_id: cookies.user_id
             })
 

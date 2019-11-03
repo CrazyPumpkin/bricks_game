@@ -29,11 +29,11 @@ const mainLoop = (socket_connections) => {
     updated_state = state.update(aggregated_actions)
     for (let user_id in socket_connections) {
         let current_connection = socket_connections[user_id]
-        current_connection.emit('/update', updated_state)
+        current_connection.emit('/update', updated_state.exports)
     }
     iterator = iterator % 1000
     if (iterator%60==0) {
-        console.log(updated_state.users)
+        console.log(updated_state.exports)
         // console.log(aggregated_actions)
 
     }
