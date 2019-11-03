@@ -14,8 +14,14 @@ socket.on('/update', (data) => {
         if (player === undefined) {
 
             let newPlayer = new PIXI.Graphics();
-            newPlayer.lineStyle(4, 0xFF3300, 1);
-            newPlayer.beginFill(0x000000); // TODO: rand color
+            randHex = () => {
+                return  '0x' + (function co(lor){   return (lor +=
+                    [0,1,2,3,4,5,6,7,8,9,'a','b','c','d','e','f'][Math.floor(Math.random()*16)])
+                && (lor.length == 6) ?  lor : co(lor); })('');
+            }
+
+            newPlayer.lineStyle(4, randHex(), 1);
+            newPlayer.beginFill(randHex()); // TODO: rand color
 
             newPlayer.drawRect(reqUser.x, reqUser.y, 20, 20);
             newPlayer.interactive = true;
