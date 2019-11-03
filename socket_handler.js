@@ -12,7 +12,6 @@ module.exports = (http) => {
                 action: "connection",
                 enum: 'disconnected',
                 user_id: socket_conenction.user_id
-
             })
         })
 

@@ -8,12 +8,12 @@ module.exports = class GameState {
     update(aggregated_actions) {
         for (const system_action of aggregated_actions.system_actions) {
             // console.log(aggregated_actions)
-            // console.log((system_action.enum == 'connected'), !(system_action.enum.user_id in this.users), system_action.user_id)
-            if ((system_action.enum == 'connected') && !(system_action.enum.user_id in this.users) && system_action.user_id) {
+            console.log((system_action.enum == 'disconnected'), (system_action.user_id in this.users), system_action.user_id)
+            if ((system_action.enum == 'connected') && !(system_action.user_id in this.users) && system_action.user_id) {
                 this.users[system_action.user_id] = new User()
-                // console.log(`${this.users[system_action.user_id]} has been added to state`)
-            } else if ((system_action.enum == 'disconnected') && (system_action.enum.user_id in this.users)) {
-                delete this.users[system_action.enum.user_id]
+                // console.log(`${this.users[system_action.user_id]} has been added to state`)state
+            } else if ((system_action.enum == 'disconnected') && (system_action.user_id in this.users)) {
+                delete this.users[system_action.user_id]
             }
         }
 

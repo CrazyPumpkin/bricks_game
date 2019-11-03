@@ -18,6 +18,7 @@ const mainLoop = (socket_connections) => {
             if (action.action == 'keyPressed') {
                 aggregated_actions.user_actions[user_id].push(action)
             } else if (action.action == 'connection') {
+                console.log(action)
                 aggregated_actions.system_actions.push(action)
             }
         }
