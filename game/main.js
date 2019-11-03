@@ -17,8 +17,8 @@ const mainLoop = (socket_connections) => {
         for (action of socket_connections[user_id].query) {
             if (action.action == 'keyPressed') {
                 aggregated_actions.user_actions[user_id].push(action)
+                // console.log(action)
             } else if (action.action == 'connection') {
-                console.log(action)
                 aggregated_actions.system_actions.push(action)
             }
         }
@@ -33,7 +33,9 @@ const mainLoop = (socket_connections) => {
     }
     iterator = iterator % 1000
     if (iterator%60==0) {
-        console.log(updated_state)
+        console.log(updated_state.users)
+        // console.log(aggregated_actions)
+
     }
     iterator++
 }
