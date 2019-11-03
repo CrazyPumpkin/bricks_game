@@ -3,12 +3,39 @@ socket.on('connect', () => {
     socket.emit('/hello', uuid4())
 });
 socket.on('/update', (data) => {
-    // for (const el of data.users) {
-    //     el.x
-    //     el.y
-    // }
+    for (let uuid in data.users) {
+
+        let player = players.get(uuid);
+
+        // unknown player
+        if (player === undefined) {
+
+            let newPlayer = new PIXI.Graphics();
+            newPlayer.lineStyle(4, 0xFF3300, 1);
+            newPlayer.beginFill(0x000000);
+
+            newPlayer.drawRect(el.x, el.y, 20, 20);
+            newPlayer.interactive = true;
+
+            newPlayer.endFill();
+
+            players.set(uuid, newPlayer);
+
+            app.stage.addChild(newPlayer);
+            continue
+        }
+
+        player.x = data.users[uuid].x;
+        player.y = data.users[uuid].y;
+
+        player._render();
+
+        players.set(uuid, player)
+    }
 });
 socket.on('disconnect', function(){});
+
+let players = new Map();
 
 
 type = "canvas";
@@ -39,20 +66,6 @@ rectangle.drawRect(50, 50, 1300, 300);
 rectangle.endFill();
 
 app.stage.addChild(rectangle);
-
-
-let player = new PIXI.Graphics();
-player.lineStyle(4, 0xFF3300, 1);
-player.beginFill(0x000000);
-
-player.drawRect(60, 60, 20, 20);
-player.interactive = true;
-
-player.endFill();
-
-app.stage.addChild(player);
-// s.emit("test", {"x":1, "y": 2});
-
 
 
 
