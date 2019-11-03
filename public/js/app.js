@@ -2,8 +2,11 @@ var socket = io();
 socket.on('connect', () => {
     socket.emit('/hello', uuid4())
 });
-socket.on('/update', function(data){
-    console.log(data)
+socket.on('/update', (data) => {
+    // for (const el of data.users) {
+    //     el.x
+    //     el.y
+    // }
 });
 socket.on('disconnect', function(){});
 
@@ -35,8 +38,9 @@ rectangle.beginFill(0x061639);
 rectangle.drawRect(50, 50, 1300, 300);
 rectangle.endFill();
 
-
 app.stage.addChild(rectangle);
+
+
 let player = new PIXI.Graphics();
 player.lineStyle(4, 0xFF3300, 1);
 player.beginFill(0x000000);
@@ -58,10 +62,24 @@ let left = keyboard("ArrowLeft"),
     down = keyboard("ArrowDown");
 
 
-right.press = () => {
-    console.log("handler right");
-    player.x += 10;
+left.press = () => {
+    emitUpdatePressed("ArrowLeft")
 };
+up.press = () => {
+    emitUpdatePressed("ArrowUp")
+};
+right.press = () => {
+    emitUpdatePressed("ArrowRight")
+};
+down.press = () => {
+    emitUpdatePressed("ArrowDown")
+};
+
+const actionKeyPressed = 'keyPressed'
+function emitUpdatePressed(aEnum) {
+    ret = {action:actionKeyPressed, enum:aEnum}
+    socket.emit('/event', ret)
+}
 
 
 document.body.appendChild(app.view);
