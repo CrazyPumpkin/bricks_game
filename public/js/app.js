@@ -5,6 +5,11 @@ socket.on('connect', () => {
 });
 
 socket.on('/update', (data) => {
+
+    if (data.users.length === 0) {
+        return players.clear()
+    }
+
     for (const uuid in data.users) {
 
         let reqUser = data.users[uuid];
@@ -82,7 +87,43 @@ border.endFill();
 
 app.stage.addChild(border);
 
+PIXI.Loader.shared
+    .add("images/background.png")
+    .load(setup);
 
+// WIP
+function setup() {
+
+    //There are 3 ways to make sprites from textures atlas frames
+
+    //1. Access the `TextureCache` directly
+    let dungeonTexture = TextureCache["background.png"];
+    dungeon = new Sprite(dungeonTexture);
+    app.stage.addChild(dungeon);
+
+    //2. Access the texture using through the loader's `resources`:
+    explorer = new Sprite(
+        resources["images/treasureHunter.json"].textures["explorer.png"]
+    );
+    explorer.x = 68;
+
+    //Center the explorer vertically
+    explorer.y = app.stage.height / 2 - explorer.height / 2;
+    app.stage.addChild(explorer);
+
+    //3. Create an optional alias called `id` for all the texture atlas
+    //frame id textures.
+    id = PIXI.loader.resources["images/treasureHunter.json"].textures;
+
+    //Make the treasure box using the alias
+    treasure = new Sprite(id["treasure.png"]);
+    app.stage.addChild(treasure);
+
+    //Position the treasure next to the right edge of the canvas
+    treasure.x = app.stage.width - treasure.width - 48;
+    treasure.y = app.stage.height / 2 - treasure.height / 2;
+    app.stage.addChild(treasure);
+}
 
 let left = keyboard("ArrowLeft"),
     up = keyboard("ArrowUp"),
