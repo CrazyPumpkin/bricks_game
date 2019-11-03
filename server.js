@@ -13,15 +13,25 @@ app.get('/', (req, res) => {
     res.sendFile('index.html')
 })
 
-require('./socket_handler')(http)
+let socket_connections =  require('./socket_handler')(http)
 
-// setInterval(()=>{
-//     for (connection of socket_connections) {
-//         connection.emit('/update', {
-//
-//         })
-//     }
-// }, 1000 / config.FPS)
+setInterval(()=>{
+    for (let uuid in socket_connections) {
+        let current_connection = socket_connections[uuid]
+        current_connection.emit('/update', {
+            users: [
+                {
+                    x: 10,
+                    y: 10
+                },
+                {
+                    x: 50,
+                    y: 50
+                }
+            ]
+        })
+    }
+}, 1000 / config.FPS)
 
 http.listen(config.PORT, (err) => {
     if (err) {

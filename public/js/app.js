@@ -2,7 +2,9 @@ var socket = io();
 socket.on('connect', () => {
     socket.emit('/hello', uuid4())
 });
-socket.on('/update', function(data){});
+socket.on('/update', function(data){
+    console.log(data)
+});
 socket.on('disconnect', function(){});
 
 
