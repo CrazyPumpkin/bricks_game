@@ -14,6 +14,15 @@ app.get('/', (req, res) => {
 })
 
 require('./socket_handler')(http)
+
+// setInterval(()=>{
+//     for (connection of socket_connections) {
+//         connection.emit('/update', {
+//
+//         })
+//     }
+// }, 1000 / config.FPS)
+
 http.listen(config.PORT, (err) => {
     if (err) {
         console.error(err)
