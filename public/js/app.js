@@ -1,10 +1,13 @@
 var socket = io();
-socket.on('connect', () => {
-    socket.emit('/hello', uuid4())
-});
-socket.on('/update', (data) => {
-    for (let uuid in data.users) {
 
+socket.on('connect', () => {
+    socket.emit('/hello')
+});
+
+socket.on('/update', (data) => {
+    for (const uuid in data.users) {
+
+        let reqUser = data.users[uuid];
         let player = players.get(uuid);
 
         // unknown player
@@ -12,9 +15,9 @@ socket.on('/update', (data) => {
 
             let newPlayer = new PIXI.Graphics();
             newPlayer.lineStyle(4, 0xFF3300, 1);
-            newPlayer.beginFill(0x000000);
+            newPlayer.beginFill(0x000000); // TODO: rand color
 
-            newPlayer.drawRect(el.x, el.y, 20, 20);
+            newPlayer.drawRect(reqUser.x, reqUser.y, 20, 20);
             newPlayer.interactive = true;
 
             newPlayer.endFill();
@@ -28,11 +31,20 @@ socket.on('/update', (data) => {
         player.x = data.users[uuid].x;
         player.y = data.users[uuid].y;
 
-        player._render();
-
         players.set(uuid, player)
     }
+
+    function removeExitPlayers(value, key, map) {
+        if (!data.users[key].has()) {
+            players.delete(key)
+        }
+    }
+
+    if (data.users.length !== players.size) {
+        players.forEach(removeExitPlayers)
+    }
 });
+
 socket.on('disconnect', function(){});
 
 let players = new Map();
@@ -49,23 +61,20 @@ let app = new PIXI.Application({
     }
 );
 
-app.renderer.backgroundColor = 0x061639;
-
 PIXI.AbstractRenderer.autoDensity = true;
+app.renderer.backgroundColor = 0x061639;
 app.renderer.resize(512, 512);
 app.renderer.view.style.position = "absolute";
 app.renderer.view.style.display = "block";
-
-
-
 app.renderer.resize(window.innerWidth, window.innerHeight);
-let rectangle = new PIXI.Graphics();
-rectangle.lineStyle(4, 0x66CCFF, 1);
-rectangle.beginFill(0x061639);
-rectangle.drawRect(50, 50, 1300, 300);
-rectangle.endFill();
 
-app.stage.addChild(rectangle);
+let border = new PIXI.Graphics();
+border.lineStyle(4, 0x66CCFF, 1);
+border.beginFill(0x061639);
+border.drawRect(50, 50, 1300, 300);
+border.endFill();
+
+app.stage.addChild(border);
 
 
 
@@ -94,9 +103,7 @@ function emitUpdatePressed(aEnum) {
     socket.emit('/event', ret)
 }
 
-
 document.body.appendChild(app.view);
-
 
 function keyboard(value) {
     let key = {};
@@ -143,25 +150,4 @@ function keyboard(value) {
     };
 
     return key;
-}
-
-function uuid4()
-{
-    function hex (s, b)
-    {
-        return s +
-            (b >>> 4   ).toString (16) +  // high nibble
-            (b & 0b1111).toString (16);   // low nibble
-    }
-
-    let r = crypto.getRandomValues (new Uint8Array (16));
-
-    r[6] = r[6] >>> 4 | 0b01000000; // Set type 4: 0100
-    r[8] = r[8] >>> 3 | 0b10000000; // Set variant: 100
-
-    return r.slice ( 0,  4).reduce (hex, '' ) +
-        r.slice ( 4,  6).reduce (hex, '-') +
-        r.slice ( 6,  8).reduce (hex, '-') +
-        r.slice ( 8, 10).reduce (hex, '-') +
-        r.slice (10, 16).reduce (hex, '-');
 }
